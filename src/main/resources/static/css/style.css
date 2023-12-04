@@ -1,0 +1,271 @@
+body {
+	background: #e2e2e2 !important;
+}
+
+.bg-primary {
+	background: #009688 !important;
+}
+
+.navbar-brand {
+	font-size: xx-large;
+}
+
+.btn-margin-left {
+	margin-left: 4px;
+}
+.btn-margin-right {
+    margin-right: 2px;
+}
+.bck-image{
+	background-image: linear-gradient(rgba(0,0,0,.5),rgba(0,0,0,.5 )) ,url(../img/bck-image.jpg);
+ 	background-size:cover;
+ 	color:white;
+ 	width:100%;
+ 	height:150 vh;
+}
+.banner{
+	width:100%;
+	height:87vh;
+	background-image:linear-gradient(rgba(0,0,0,.5),rgba(0,0,0,.5)) ,url(../img/welcome.jpg);
+ 	background-size:cover;
+/* /* 	background-attachment: fixed; */ 
+/*   	background-position:50% 50%;   */
+color:white;
+}
+.bottom-left {
+  position: absolute;
+  bottom: 8px;
+  left: 16px;
+}
+.bottom-right {
+  position: absolute;
+  bottom: 8px;
+  right: 16px;
+}
+.my-card{
+	padding: 20px;
+	background: rgba(255, 255, 255, .0);
+}
+/* Full-width input fields */
+input[type=text], input[type=password],input[type=email] {
+  width: 100%;
+  padding: 15px;
+  margin: 5px 0 22px 0;
+  display: inline-block;
+  border: none;
+  background: #f1f1f1;
+}
+
+/* Add a background color when the inputs get focus */
+input[type=text]:focus, input[type=password]:focus {
+  background-color: #ddd;
+  outline: none;
+}
+
+/* Set a style for all buttons */
+button {
+  background-color: #04AA6D;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  opacity: 0.9;
+}
+
+button:hover {
+  opacity:1;
+}
+
+/* Extra styles for the cancel button */
+
+
+/* Float cancel and signup buttons and add an equal width */
+.signupbtn, .loginbtn {
+/*   float: right;  */
+   width: 35%; 
+}
+.cancelbtn {
+  padding: 14px 20px;
+  border: none;
+   background-color: #f44336;
+/*    float:right; */
+   width:35%;
+}
+/* Add padding to container elements */
+.container {
+  padding: 16px;
+}
+nav{
+	display: flex;
+	padding: 2% 6%;
+	justify-content: space-between;
+	align-items: center;
+}
+/* nav img{
+	width: 150px;
+} */
+.nav-links{
+	flex: 1;
+	text-align: right;
+	width:150%
+}
+
+.nav-links ul li{
+	list-style: none;
+	display: inline-block;
+	padding: 10px 12px;
+	position: relative;
+	}
+
+.nav-links ul li a{
+	color: #ffffff;
+	  bottom: 0;
+	text-decoration: none;
+	font-size: 13px;
+	
+}
+.home{
+	text-align: right;
+	  bottom: 0;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  overflow: auto;
+  text-align: right;
+  border-radius: 10px;
+  margin: 2px;
+  
+}
+.dropdown:hover .dropdown-content {
+  display: block;
+  color:#ffffff;
+  background-color: #000000;
+  
+}
+.dropdown-content a {
+  display: block;
+  color: #000000;
+  padding: 5px;
+  text-decoration: none;
+  border-radius: 10px;
+ 
+  
+}
+.dropdown-content a:hover {
+  color: #ffffff;
+  background-color: #808080;
+}
+
+.navbar-fix{
+	 padding-right: 80px !important;
+	   bottom: 0;
+}
+.home-hover a:hover {
+  color: #000000;
+    bottom: 0;
+}
+.cat{
+	width: 80%;
+	margin: auto;
+	padding-top: 50px;
+	text-align: center;
+/* 	background-image:url(../img/logo1.jpg);
+ */ 	background-size:cover;
+	
+}
+.heading{
+	font-size: 36px;
+	font-weight: 600;
+}
+.content{
+	color: #004080;
+	font-size: 16px;
+	font-weight: 300;
+	line-height: 22px;
+	padding: 10px;
+}
+/*.nav-links ul li::after{
+	content: '';
+	width: 0;
+	height: 2px;
+	background: #000;
+	display: block;
+	margin: auto;
+	transition: 0.5s;
+}
+.nav-links ul li:hover::after{
+	width: 40%;
+	}*/
+	/* .nav-item{
+	width: 20%;} */
+	.home-btn{
+	text-align: center;}
+	.categ{
+	width: 80%;
+	margin: auto;
+	padding-top: 10;
+	}
+	.cat{
+	width: 80%;
+	margin: auto;
+	text-align: center;
+	padding-top: 100px;
+	
+	}
+	.categ-col{
+	flex-basis: 31%;
+	border-radius: 10px;
+	margin-bottom: 5%;
+	margin: 5%;
+	
+	}
+	.categ-col img{
+	width: 100%;
+	border-radius: 10px;
+	}
+
+	
+	.categ-col h3::after{
+	content: '';
+	width: 0;
+	height: 2px;
+	background: #000;
+	display: block;
+	margin: auto;
+	transition: 0.5s;
+}
+.categ-col h3:hover::after{
+	width: 40%;
+	}
+	.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 10px;
+}
+
+.grid img {
+  width: 70%;
+}
+.c1{
+	color:black;
+}
+.icons {
+  border: none;
+  color: white;
+  padding: 12px 16px;
+  font-size: 16px;
+  cursor: pointer;
+}
+.forgotpsw{
+	float:right;
+	position:relative;
+	
+}
+.linkclr{
+	color: white;
+	
+}

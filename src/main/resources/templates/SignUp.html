@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	th:replace="normalBase::layout(~{::section})">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="ISO-8859-1">
+<!-- Add icon library -->
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" th:href="@{/css/validationStyle.css}">
+<script src='https://kit.fontawesome.com/a076d05399.js'
+	crossorigin='anonymous'></script>
+<style>
+body {
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+* {
+	box-sizing: border-box;
+}
+
+.input-container {
+	display: -ms-flexbox; /* IE10 */
+	display: flex;
+	width: 100%;
+	margin-bottom: 10px;
+}
+
+.icon {
+	padding: 10px;
+	background: dodgerblue;
+	color: white;
+	min-width: 40px;
+	height: 20px;
+	text-align: center;
+}
+
+.input-field {
+	width: 100%;
+	padding: 10px;
+	outline: none;
+}
+
+.input-field:focus {
+	border: 2px solid dodgerblue;
+}
+
+/* Set a style for the submit button */
+.btn {
+	background-color: dodgerblue;
+	color: white;
+	padding: 15px 20px;
+	border: none;
+	cursor: pointer;
+	width: 100%;
+	opacity: 0.9;
+}
+
+.btn:hover {
+	opacity: 1;
+}
+
+</style>
+</head>
+<body>
+
+	<section class="bck-image">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-8 offset-md-2">
+					<div class="my-card">
+						<div th:if="${session.message}" class="container">
+							<div class="alert alert-danger my-2 text-center" role="alert">
+								<span th:text="${session.message}"></span>
+							</div>
+							<th:block th:text="${#session.removeAttribute('message')}"></th:block>
+						</div>
+						<div class="container text-center">
+							<img style="width: 80px;" src="" th:src="@{/img/signup.gif}"
+								alt="" />
+						</div>
+						<h1 class="text-center">Register Here!!</h1>
+						<form novalidate action="/action_page.php"
+							th:action="@{/ForgotPassword}" method="post" th:object="${user}">
+							<div class="input-container">
+								<label for="firstName"><b>First Name</b></label><input
+									id="firstName" type="text" class="input-field"
+									th:classappend="is-invalid" name="firstName"
+									placeholder="Enter FirstName" required
+									th:value="${user.firstName}">
+								<div class="invalid-feedback"
+									th:if="${#fields.hasErrors('firstName')}"
+									th:errors="${user.firstName}"></div>
+							</div>
+							<div class="input-container">
+								<label for="lastName"><b>Last Name</b></label><input
+									id="lastName" type="text" class="input-field"
+									th:classappend="is-invalid" name="lastName"
+									placeholder="Enter LastName" required
+									th:value="${user.lastName}">
+								<div class="invalid-feedback"
+									th:if="${#fields.hasErrors('lastName')}"
+									th:errors="${user.lastName}"></div>
+							</div>
+							<div class="input-container">
+								<i class="fa fa-envelope icon"></i> <label for="email"><b>Email</b></label><input
+									id="email" type="text" class="input-field"
+									th:classappend="is-invalid" placeholder="Enter Email"
+									name="email"
+									pattern="^[a-zA-Z0-9._%+-]+@(gmail\.com|nwmissouri\.edu)$"
+									required th:value="${user.email}">
+								<div class="invalid-feedback"
+									th:if="${#fields.hasErrors('email')}" th:errors="${user.email}"></div>
+							</div>
+
+							<div class="input-container">
+								<i class="fa fa-key icon"></i> <label for="psw"><b>Password</b></label>
+								<input id="pwd" type="password" class="input-field"
+									th:classappend="is-invalid" placeholder="Enter Password"
+									name="password"
+									pattern="^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$"
+									required th:value="${user.password}">
+								<div class="invalid-feedback"
+									th:if="${#fields.hasErrors('password')}"
+									th:errors="${user.password}"></div>
+							</div>
+							<div id="message" style="display: none;" >
+								<h5>Password must contain the following:</h5>
+								<p id="letter" class="invalid">
+									A <b>lowercase</b> letter
+								</p>
+								<p id="capital" class="invalid">
+									A <b>capital (uppercase)</b> letter
+								</p>
+								<p id="number" class="invalid">
+									A <b>number</b>
+								</p>
+								<p id="length" class="invalid">
+									Minimum <b>8 characters</b>
+								</p>
+							</div>
+							<div class="input-container">
+								<i class="fa fa-key icon"></i> <label for="psw"><b>Repeat
+										Password</b></label> <input class="input-field" type="password"
+									th:classappend="is-invalid"
+									placeholder="Re-Enter your Password" name="rePassword"
+									th:value="${user.rePassword}" required>
+								<div class="invalid-feedback"
+									th:if="${#fields.hasErrors('rePassword')}"
+									th:errors="${user.rePassword}"></div>
+							</div>
+							<div class="clearfix text-center">
+
+
+								<button type="submit" class="signupbtn">Sign Up</button>
+								<a th:href="@{/}"><button type="button" class="cancelbtn">Cancel</button></a>
+							</div>
+							</form>
+					</div>
+					
+				</div>
+			</div>
+		</div>
+	<script>
+		var myInput = document.getElementById("pwd");
+		var letter = document.getElementById("letter");
+		var capital = document.getElementById("capital");
+		var number = document.getElementById("number");
+		var length = document.getElementById("length");
+
+		// When the user clicks on the password field, show the message box
+		myInput.onfocus = function() {
+			document.getElementById("message").style.display = "block";
+		}
+
+		// When the user clicks outside of the password field, hide the message box
+		myInput.onblur = function() {
+			document.getElementById("message").style.display = "none";
+		}
+
+		// When the user starts to type something inside the password field
+		myInput.onkeyup = function() {
+			// Validate lowercase letters
+			var lowerCaseLetters = /[a-z]/g;
+			if (myInput.value.match(lowerCaseLetters)) {
+				letter.classList.remove("invalid");
+				letter.classList.add("valid");
+			} else {
+				letter.classList.remove("valid");
+				letter.classList.add("invalid");
+			}
+
+			// Validate capital letters
+			var upperCaseLetters = /[A-Z]/g;
+			if (myInput.value.match(upperCaseLetters)) {
+				capital.classList.remove("invalid");
+				capital.classList.add("valid");
+			} else {
+				capital.classList.remove("valid");
+				capital.classList.add("invalid");
+			}
+
+			// Validate numbers
+			var numbers = /[0-9]/g;
+			if (myInput.value.match(numbers)) {
+				number.classList.remove("invalid");
+				number.classList.add("valid");
+			} else {
+				number.classList.remove("valid");
+				number.classList.add("invalid");
+			}
+
+			// Validate length
+			if (myInput.value.length >= 8) {
+				length.classList.remove("invalid");
+				length.classList.add("valid");
+			} else {
+				length.classList.remove("valid");
+				length.classList.add("invalid");
+			}
+		}
+		</script>
+	</section>
+</body>
+</html>
