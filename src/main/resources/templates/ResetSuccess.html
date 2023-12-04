@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	th:replace="normalBase::layout(~{::section})">
+<head>
+<meta charset="ISO-8859-1">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<title>Success</title>
+</head>
+<body>
+	<section class="bck-image">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-8 offset-md-2" style="height:480px">
+					 <div class="my-card">
+					<div th:if="${session.message}" th:classappend="${session.message.type}"class="alert alert-primary" role="alert">
+						<p class="text-center" th:text="${session.message.text}"></p>
+						<a th:if="${session.message.text.contains('Successfully Changed')}" th:href="@{/}"><p class="text-center">Click here to go to Home Page</p></a>
+						<th:block th:text="${#session.removeAttribute('message')}"></th:block>
+					</div>		
+			</div>
+		</div>
+		</div>
+		</div>
+	</section>
+</body>
+</html>

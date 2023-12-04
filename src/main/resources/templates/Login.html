@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	th:replace="normalBase::layout(~{::section})">
+<head>
+<meta charset="ISO-8859-1">
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
+<title>Home</title>
+</head>
+<body>
+	<section class="bck-image">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-8 offset-md-2">
+					<div class="my-card">
+					<div th:if="${session.message}" class="container">
+						<div class="alert alert-danger my-2 text-center" role = "alert">
+								<span th:text="${session.message}"></span>
+						</div>
+						<th:block th:text="${#session.removeAttribute('message')}"></th:block>
+					</div>
+					<div class="container text-center">
+							<img style="width:80px;" src= "" th:src="@{/img/login-.gif}" alt=""/>
+							</div>
+						<h1 class="text-center">Login Here!</h1>
+						<form novalidate action="" th:action="@{/category}" method="post">
+							<div class="container">
+							<div class="input-container">
+								<i class="fa fa-envelope icon"></i>
+								<label class="bright" for="uname"><b>Email</b></label> <input type="text"
+									placeholder="Enter Email" name="email" required> 
+									<div th:if="${param.error}" class="alert alert-danger">Invalid email and password</div>
+									</div>
+									<div class="input-container">
+								<i class="fa fa-key icon"></i> 
+									<label
+									for="psw"><b>Password</b></label> <input type="password"
+									placeholder="Enter Password" name="password" required>
+									</div>
+								<div class="clearfix text-center">
+									
+									<button type="submit" class="loginbtn">Login</button>
+									<a th:href="@{/}"><button type="button"
+										class="cancelbtn">Cancel</button></a>
+									
+								</div>
+							</div>
+
+							<div class="container">
+								<span class="forgotpsw"><a style="font-weight: bold" class ="linkclr" th:href="@{/ResetPassword}" href="#">Forgot password?</a></span>
+							</div>
+						</form>
+					</div>
+
+				</div>
+			</div>
+		</div>
+		</div>
+	</section>
+</body>
+</html>

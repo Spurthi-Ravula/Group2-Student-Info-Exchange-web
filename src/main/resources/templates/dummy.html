@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	th:replace="passwordBase::layout(~{::section})">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link href="https://fonts.googleapis.com/css?family=Aleo|Slabo+27px"
+	rel="stylesheet">
+</head>
+<style>
+* {
+	box-sizing: border-box;
+}
+
+body {
+	font-family: Arial, Helvetica, sans-serif;
+}
+.input-container {
+	display: -ms-flexbox; /* IE10 */
+	display: flex;
+	width: 100%;
+	margin-bottom: 10px;
+}
+.icon {
+	padding: 10px;
+	background: dodgerblue;
+	color: white;
+	min-width: 40px;
+	height: 20px;
+	text-align: center;
+}
+.container {
+	background-color: white;
+	box-shadow: 0px 2px 10px rgba(255, 255, 255, 0.2);
+	padding: 10px;
+	width: 400px;
+	border-radius: 10px;
+}
+
+
+#set {
+	display: block;
+	position: relative;
+	margin: auto;
+}
+
+#count {
+	display: inline-block;
+	position: relative;
+	margin: 4%;
+	margin-bottom: 2%;
+	color: #000;
+	font-size: 18px;
+	text-indent: 40px;
+	font-weight: bolder;
+}
+
+#see {
+	display: inline-block;
+	color: white;
+	margin: auto;
+	float: right;
+	margin-right: 40px;
+	margin-top: 10px;
+	cursor: pointer;
+	transition-duration: 0.2s;
+}
+
+input[id='password'] {
+	padding: 10px;
+	border: none;
+	width: 80%;
+	outline: none;
+	border-bottom: 5px solid #2a0845;
+	display: block;
+	position: relative;
+	font-size: 27px;
+	text-align: center;
+	top: 50px;
+	margin-top: -20px;
+	margin-left: 35px;
+	margin-bottom: 40px;
+	user-select: auto;
+	font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+	transition-duration: 600ms;
+}
+
+i {
+	font-size: 20px;
+	transition-duration: 600ms;
+}
+
+
+span {
+	margin: 10px;
+	font-weight: bold;
+}
+
+input:hover {
+	border-bottom: 5px solid #6441a5;
+}
+</style>
+<body>
+	<section class="bck-image">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-8 offset-md-2">
+					<div class="my-card">
+
+						<div th:if="${session.message}" class="container">
+							<div class="alert alert-danger my-2 text-center" role="alert">
+								<span th:text="${session.message}"></span>
+							</div>
+							<th:block th:text="${#session.removeAttribute('message')}"></th:block>
+						</div>
+						<div class="container text-center">
+							<img style="width: 80px;" src="" th:src="@{/img/signup.gif}"
+								alt="" />
+						</div>
+						<h1 class="text-center">Register Here!!</h1>
+						<form novalidate action="" th:action="@{/ForgotPassword}"
+							method="post">
+							<div class="input-container">
+							<i class="fa fa-user icon"></i>
+								<label for="firstName"><b>First Name</b></label><input
+									id="firstName" type="text" class="input-field"
+									th:classappend="is-invalid" name="firstName"
+									placeholder="Enter FirstName" required>
+
+							</div>
+							<div class="input-container">
+							<i class="fa fa-user icon"></i>
+								<label for="lastName"><b>Last Name</b></label><input
+									id="lastName" type="text" class="input-field"
+									th:classappend="is-invalid" name="lastName"
+									placeholder="Enter LastName" required>
+
+							</div>
+							<div class="input-container">
+								<i class="fa fa-envelope icon"></i> <label for="email"><b>Email</b></label><input
+									id="email" type="text" class="input-field"
+									th:classappend="is-invalid" placeholder="Enter Email"
+									name="email"
+									pattern="^[a-zA-Z0-9._%+-]+@(gmail\.com|nwmissouri\.edu)$"
+									required>
+
+							</div>
+
+							<div class="input-container">
+								<i class="fa fa-key icon"></i> <label for="psw"><b>Password</b></label>
+								<input id="password" type="password" class="input-field"
+									th:classappend="is-invalid" placeholder="Enter Password"
+									name="password" onInput="check()" onclick="display()"
+									required>
+
+							</div>
+							<div id="set" style="display: block;position: relative;margin: auto;">
+								<div id="count"></div>
+								<i id="see" onclick="see()" class="fa fa-eye"></i>
+							</div>
+							<div id="check0" style="display:none;position: relative;color: yellow;font-size: 12px;">
+								<i class="fa fa-check-circle"></i> <span> Length more
+									than 8.</span>
+							</div>
+							<div id="check1" style="display:none;position: relative;color: yellow;font-size: 12px;">
+								<i class="fa fa-check-circle"></i> <span> Contains lower
+									case character.</span>
+							</div>
+							<div id="check2" style="display: none;position: relative;color: yellow;font-size: 12px;">
+								<i class="fa fa-check-circle"></i> <span> Contains upper
+									case character.</span>
+							</div>
+							<div id="check3" style="display: none;position: relative;color: yellow;font-size: 12px;">
+								<i class="fa fa-check-circle"></i> <span> Contains
+									numerical character.</span>
+							</div>
+							<div id="check4" style="display: none;position: relative;color: yellow;font-size: 12px;">
+								<i class="fa fa-check-circle"></i> <span>Contains
+									special character.</span>
+							</div>
+					
+					<div class="input-container">
+						<i class="fa fa-key icon"></i> <label for="psw"><b>Repeat
+								Password</b></label> <input class="input-field" type="password"
+							th:classappend="is-invalid" placeholder="Re-Enter your Password"
+							name="rePassword" required>
+
+					</div>
+					<div class="clearfix text-center">
+
+
+						<button type="submit" class="signupbtn">Sign Up</button>
+						<a th:href="@{/}"><button type="button" class="cancelbtn">Cancel</button></a>
+					</div>
+					</form>
+					</div>
+			</div>
+		</div>
+		</div>
+<script>
+var is_visible = false;
+
+function see()
+{
+    var input = document.getElementById("password");
+    var see = document.getElementById("see");
+    
+    if(is_visible)
+    {
+        input.type = 'password';
+        is_visible = false; 
+        see.style.color='yellow';
+    }
+    else
+    {
+        input.type = 'text';
+        is_visible = true; 
+        see.style.color='violet';
+    }
+    
+}
+function check()
+{
+	
+    var input = document.getElementById("password").value;
+    input=input.trim();
+    document.getElementById("password").value=input;
+    document.getElementById("check0").style.display="block";
+	document.getElementById("check1").style.display="block";
+	document.getElementById("check2").style.display="block";
+	document.getElementById("check3").style.display="block";
+	document.getElementById("check4").style.display="block";
+    if(input.length>=8)
+    {
+        document.getElementById("check0").style.color="lightblue";
+    }
+    else
+    {
+       document.getElementById("check0").style.color="yellow"; 
+    }
+    
+    if(input.match(/[a-z]/g))
+    {
+        document.getElementById("check1").style.color="lightblue";
+    }
+    else
+    {
+       document.getElementById("check1").style.color="yellow"; 
+    }
+     if(input.match(/[A-Z]/g))
+    {
+        document.getElementById("check2").style.color="lightblue";
+    }
+    else
+    {
+       document.getElementById("check2").style.color="yellow"; 
+    }
+    if(input.match(/[0-9]/i))
+    {
+        document.getElementById("check3").style.color="lightblue";
+    }
+    else
+    {
+       document.getElementById("check3").style.color="yellow"; 
+    }
+    
+    if(input.match(/[^A-Za-z0-9-' ']/i))
+    {
+        document.getElementById("check4").style.color="lightblue";
+    }
+    else
+    {
+       document.getElementById("check4").style.color="yellow"; 
+    }
+}
+</script>
+
+	</section>
+</body>
+</html>
