@@ -2,33 +2,25 @@ package com.gdpdemo.GDPSprint1Project;
 
 import java.util.Random;
 
-
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.CurrentSecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
-
 
 import com.gdpdemo.GDPSprint1Project.Repository.HomeRepository;
 import com.gdpdemo.GDPSprint1Project.service.EmailService;
+
 
 
 @Controller
@@ -39,6 +31,10 @@ public class HomeController {
 	
 	@Autowired
 	private EmailService emailservice;
+	
+	
+	private EncryptDecrypt encyptDecrypt;
+	
 	
 
 	ModelAndView mv = new ModelAndView();
@@ -116,8 +112,15 @@ public class HomeController {
 			Home home = this.homeRepository.getUserByUserName(user.getEmail());
 			if(home==null) {
 				System.out.println("USER" + user);
-				/* Home save = homeRepository.save(user) */;
-				Home save = homeRepository.save(user);
+				
+				String password = user.getPassword();
+				System.out.println("password************"+ password);
+				
+			BCryptPasswordEncoder bcyrpt = new BCryptPasswordEncoder();
+			String encryptedPwd = bcyrpt.encode(user.getPassword());
+			user.setPassword(encryptedPwd);
+			user.setRePassword(encryptedPwd);        
+			Home save = homeRepository.save(user);
 				model.addAttribute("user", new Home());
 			session.setAttribute("email", user.getEmail());
 			return "ForgotPassword";
@@ -126,6 +129,8 @@ public class HomeController {
 				session.setAttribute("message", "User with this email already exists");
 				return "Demo";
 			}
+			String firstName = home.getFirstName();
+			emailservice.sendPasswordChangedMessage(user.getEmail(), user.getFirstName());
 			// session.setAttribute("message", new Message("Successfully Registered!!!",
 			// "alert-success"));
 			
@@ -189,14 +194,17 @@ public class HomeController {
 
 			System.out.println("USER" + user.getEmail());
 
-			/* System.out.println(emailId); */
+			
 			Home home = this.homeRepository.getUserByUserName(user.getEmail());
+			System.out.println("Home" + home.getEmail());
 			
 			if (home == null) {
 				session.setAttribute("message", "User does not exits with this email !!");
 				return "Login";
 			} else {
-				if(!home.getPassword().contains(user.getPassword())){
+				BCryptPasswordEncoder bcyrpt = new BCryptPasswordEncoder();
+				
+				if(!bcyrpt.matches(user.getPassword(), home.getPassword())){
 					session.setAttribute("message","Please Enter Correct Password");
 					return "Login";
 				}
@@ -253,13 +261,19 @@ public class HomeController {
 	}
 
 	@RequestMapping(value = "/change-password", method = RequestMethod.POST)
-	public String changePassword(@RequestParam("newpassword") String newpassword, HttpSession session) {
+	public String changePassword(@RequestParam("newpassword") String newpassword, HttpSession session) throws MessagingException {
 		String email = (String) session.getAttribute("email");
 		Home home = this.homeRepository.getUserByUserName(email);
-		home.setPassword(newpassword);
-		home.setRePassword(newpassword);
+		
+		BCryptPasswordEncoder bcyrpt = new BCryptPasswordEncoder();
+		String encryptedPwd = bcyrpt.encode(newpassword);
+		home.setPassword(encryptedPwd);
+		home.setRePassword(encryptedPwd);        
+		
 		this.homeRepository.save(home);
 		session.setAttribute("message", new Message("Password Successfully Changed", "alert-success"));
+		String firstName = home.getFirstName();
+		emailservice.sendPasswordChangedMessage(email, firstName);
 		return "ResetSuccess";
 
 	}

@@ -43,4 +43,32 @@ public class EmailService {
 	     javaMailSender.send(msg);
    }
 	
+	public void sendRegisteredMessage(String to, String name) throws MessagingException {
+		
+		 MimeMessage msg = javaMailSender.createMimeMessage();
+	     MimeMessageHelper helper = new MimeMessageHelper(msg, true);
+	     helper.setTo(to);
+	     String subject = "Registered successfully";
+	     String content = "<p>Hello " + name + ",</p>"
+	                + "<p>Registered succesfully.</p>";
+	         
+	     helper.setSubject(subject); 
+	     helper.setText(content, true);
+	     javaMailSender.send(msg);
+ }
+	
+	public void sendPasswordChangedMessage(String to, String name) throws MessagingException {
+		
+		 MimeMessage msg = javaMailSender.createMimeMessage();
+	     MimeMessageHelper helper = new MimeMessageHelper(msg, true);
+	     helper.setTo(to);
+	     String subject = "Password changed successfully";
+	     String content = "<p>Hello " + name + ",</p>"
+	                + "<p>Your Password has been changed succesfully.</p>";
+	         
+	     helper.setSubject(subject); 
+	     helper.setText(content, true);
+	     javaMailSender.send(msg);
+  }
+	
 }

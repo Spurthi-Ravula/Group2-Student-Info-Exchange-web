@@ -131,6 +131,7 @@ input:hover {
 								<label for="firstName"><b>First Name</b></label><input
 									id="firstName" type="text" class="input-field"
 									th:classappend="is-invalid" name="firstName"
+									pattern="^[a-z]"
 									placeholder="Enter FirstName" required th:value="${user.firstName}">
 									<div class="invalid-feedback" style="color:yellow"
 									th:if="${#fields.hasErrors('firstName')}"
@@ -141,6 +142,7 @@ input:hover {
 								<label for="lastName"><b>Last Name</b></label><input
 									id="lastName" type="text" class="input-field"
 									th:classappend="is-invalid" name="lastName"
+									pattern="^[a-z]"
 									placeholder="Enter LastName" required th:value="${user.lastName}">
 									<div class="invalid-feedback" style="color:yellow"
 									th:if="${#fields.hasErrors('lastName')}"
