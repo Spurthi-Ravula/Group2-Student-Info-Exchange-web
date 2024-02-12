@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Certificate Assistance</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url('http://localhost:8000/background.jpeg');
+ /* Replace 'background-image.jpg' with the path to your image */
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+
+        .form-container {
+            width: 300px;
+            margin: 0 auto;
+            background-color: rgba(255, 255, 255, 0.8); /* Adding a semi-transparent white background to the form */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* Adding a shadow effect */
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        textarea {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-top: 5px;
+            margin-bottom: 10px; /* Adjusted margin to match Student Id */
+            box-sizing: border-box;
+        }
+
+        input[type="submit"] {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        textarea {
+            resize: vertical;
+        }
+    </style>
+</head>
+<body>
+<div class="form-container">
+    <h2>Certificate Assistance</h2>
+    <form action="/submit_request" method="post">
+        <input type="hidden" name="request_type" value="Transcript Request">
+        <label for="full-name">Full Name:</label>
+        <input type="text" id="full-name" name="full-name" required>
+        <label for="email">Email ID:</label>
+        <input type="email" id="email" name="email" required>
+        <label for="phone">Phone Number:</label>
+        <input type="tel" id="phone" name="phone" required pattern="[0-9]{10}">
+        <label for="Student Id">Student Id:</label>
+        <input type="text" id="Student Id" name="Student Id" required>
+        <label for="Request Description">Request Description:</label>
+        <textarea id="Request Description" name="Request Description" rows="4" cols="50"></textarea>
+        <input type="submit" value="Submit">
+    </form>
+</div>
+</body>
+</html>
