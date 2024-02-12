@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accommodation Page</title>
+</head>
+<body>
+    <h1>Welcome to the Student Info Exchange Accommodation Page!</h1>
+
+    <form id="studentForm">
+        <h2>Enter details for Student 1:</h2>
+        <label for="name1">Name:</label>
+        <input type="text" id="name1" name="name1" required><br>
+
+        <label for="age1">Age:</label>
+        <input type="number" id="age1" name="age1" required><br>
+
+        <label for="gender1">Gender:</label>
+        <input type="text" id="gender1" name="gender1" required><br>
+
+        <label for="university1">University:</label>
+        <input type="text" id="university1" name="university1" required><br>
+
+        <h2>Enter details for Student 2:</h2>
+        <label for="name2">Name:</label>
+        <input type="text" id="name2" name="name2" required><br>
+
+        <label for="age2">Age:</label>
+        <input type="number" id="age2" name="age2" required><br>
+
+        <label for="gender2">Gender:</label>
+        <input type="text" id="gender2" name="gender2" required><br>
+
+        <label for="university2">University:</label>
+        <input type="text" id="university2" name="university2" required><br>
+
+        <input type="submit" value="Submit">
+    </form>
+
+    <script>
+        document.getElementById("studentForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            displayStudentInfo();
+        });
+
+        function displayStudentInfo() {
+            // Retrieve values from the form
+            const name1 = document.getElementById("name1").value;
+            const age1 = document.getElementById("age1").value;
+            const gender1 = document.getElementById("gender1").value;
+            const university1 = document.getElementById("university1").value;
+
+            const name2 = document.getElementById("name2").value;
+            const age2 = document.getElementById("age2").value;
+            const gender2 = document.getElementById("gender2").value;
+            const university2 = document.getElementById("university2").value;
+
+            // Display information
+            alert("Student 1 Information:\n\nName: " + name1 + "\nAge: " + age1 + "\nGender: " + gender1 + "\nUniversity: " + university1 +
+                "\n\nStudent 2 Information:\n\nName: " + name2 + "\nAge: " + age2 + "\nGender: " + gender2 + "\nUniversity: " + university2);
+        }
+    </script>
+</body>
+</html>
