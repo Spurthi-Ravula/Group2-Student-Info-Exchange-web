@@ -1,25 +1,65 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html>
 <head>
     <meta charset="UTF-8">
     <title>Events</title>
     <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
         .event-box {
-            border: 1px solid #ccc;
-            padding: 10px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .event-box h2 {
+            font-size: 24px;
             margin-bottom: 10px;
+        }
+
+        .event-box p {
+            margin: 5px 0;
+        }
+
+        .event-box button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .event-box button:hover {
+            background-color: #0056b3;
         }
     </style>
 </head>
 <body>
-    <h1>Events</h1>
-    <div th:each="event : ${events}">
-        <div class="event-box">
-            <h2 th:text="${event.event_name}"></h2>
-            <p th:text="'Date: ' + ${event.event_date}"></p>
-            <p th:text="'Location: ' + ${event.location}"></p>
-            <p th:text="'Alloted Seats: ' + ${event.alloted_seats}"></p>
-            <button type="button" th:text="'Register for ' + ${event.event_name}"></button>
+    <div class="container">
+        <h1>Events</h1>
+        <div th:each="event : ${events}">
+            <div class="event-box">
+                <h2 th:text="${event.event_name}"></h2>
+                <p th:text="'Date: ' + ${event.event_date}"></p>
+                <p th:text="'Location: ' + ${event.location}"></p>
+                <p th:text="'Allotted Seats: ' + ${event.alloted_seats}"></p>
+                <button type="button" th:text="'Register for ' + ${event.event_name}"></button>
+            </div>
         </div>
     </div>
 </body>
