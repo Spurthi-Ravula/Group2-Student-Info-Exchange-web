@@ -1,0 +1,57 @@
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@SpringBootApplication
+@RestController
+public class RideSharingApplication {
+
+    private List<Ride> rides = new ArrayList<>();
+
+    public static void main(String[] args) {
+        SpringApplication.run(RideSharingApplication.class, args);
+    }
+
+  
+    @PostMapping("/post_ride")
+    public String postRide(@RequestBody Ride ride) {
+        rides.add(ride);
+        return "Ride posted successfully";
+    }
+
+   
+    @GetMapping("/search_rides")
+    public List<Ride> searchRides(@RequestParam String source, @RequestParam String destination) {
+        List<Ride> matchedRides = new ArrayList<>();
+        for (Ride ride : rides) {
+            if (ride.getSource().equals(source) && ride.getDestination().equals(destination)) {
+                matchedRides.add(ride);
+            }
+        }
+        return matchedRides;
+    }
+
+    static class Ride {
+        private String source;
+        private String destination;
+
+        public String getSource() {
+            return source;
+        }
+
+        public void setSource(String source) {
+            this.source = source;
+        }
+
+        public String getDestination() {
+            return destination;
+        }
+
+        public void setDestination(String destination) {
+            this.destination = destination;
+        }
+    }
+}
