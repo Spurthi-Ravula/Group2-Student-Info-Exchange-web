@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ride Sharing Platform</title>
+</head>
+<body>
+    <h1>Ride Sharing Platform</h1>
+
+    <h2>Post a Ride</h2>
+    <form id="post-ride-form">
+        <label for="source">Source:</label>
+        <input type="text" id="source" name="source"><br><br>
+        <label for="destination">Destination:</label>
+        <input type="text" id="destination" name="destination"><br><br>
+        <button type="submit">Post Ride</button>
+    </form>
+
+    <h2>Search for Rides</h2>
+    <form id="search-ride-form">
+        <label for="search-source">Source:</label>
+        <input type="text" id="search-source" name="search-source"><br><br>
+        <label for="search-destination">Destination:</label>
+        <input type="text" id="search-destination" name="search-destination"><br><br>
+        <button type="submit">Search Rides</button>
+    </form>
+
+    <h2>Available Rides</h2>
+    <ul id="ride-list"></ul>
+
+    <script>
+        document.getElementById('post-ride-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const source = document.getElementById('source').value;
+            const destination = document.getElementById('destination').value;
+            fetch('/post_ride', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ source, destination })
+            }).then(response => response.json())
+              .then(data => alert(data.message))
+              .catch(error => console.error('Error:', error));
+        });
+
+        document.getElementById('search-ride-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const source = document.getElementById('search-source').value;
+            const destination = document.getElementById('search-destination').value;
+            fetch(`/search_rides?source=${source}&destination=${destination}`)
+              .then(response => response.json())
+              .then(data => {
+                  const rideList = document.getElementById('ride-list');
+                  rideList.innerHTML = '';
+                  data.forEach(ride => {
+                      const li = document.createElement('li');
+                      li.textContent = `From: ${ride.source}, To: ${ride.destination}`;
+                      rideList.appendChild(li);
+                  });
+              })
+              .catch(error => console.error('Error:', error));
+        });
+    </script>
+</body>
+</html>
