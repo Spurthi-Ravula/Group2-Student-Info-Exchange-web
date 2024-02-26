@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Management System</title>
+    <link 
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    >
+    <link 
+      href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.css" 
+      rel="stylesheet"
+      type='text/css'
+    >
+	<link th:href="@{/assets/css/index.css}" rel="stylesheet" />
+</head>
+<body>
+<div th:replace="fragments/header.html :: header"></div>
+<div class="container">
+        <div class="row mt-5">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+						<img class="thumbnail-img rounded mx-auto d-block" th:src="@{/assets/images/accommodation.png}"/>
+                        <h5 class="card-title">Accommodation</h5>
+                        <p class="card-text">Find Best Accommodation as per your needs.</p>
+						<a href="/accommodation" class="btn btn-success" role="button">Explore</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+						<img class="thumbnail-img rounded mx-auto d-block" th:src="@{/assets/images/rides.png}"/>
+                        <h5 class="card-title">Rides</h5>
+                        <p class="card-text">Find Rides as per your budgets.</p>
+						<a href="/rides" class="btn btn-success" role="button">Explore</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <img class="thumbnail-img rounded mx-auto d-block" th:src="@{/assets/images/calendar.png}"/>
+                        <h5 class="card-title">Event/Calendar</h5>
+                        <p class="card-text">Let's have some fun. Look for events arround you</p>
+						<a href="/events" class="btn btn-success" role="button">Explore</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+						<img class="thumbnail-img rounded mx-auto d-block" th:src="@{/assets/images/marketplace.png}"/>
+                        <h5 class="card-title">Student MarketPlace</h5>
+                        <p class="card-text">Lets go on the shopping!</p>
+						<a href="/student-marketplace" class="btn btn-success" role="button">Explore</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <img class="thumbnail-img rounded mx-auto d-block" th:src="@{/assets/images/certification.png}"/>
+                        <h5 class="card-title">Certification Assistance</h5>
+                        <p class="card-text">Upload a certificate and let your teammates know about it.</p>
+						<a href="/certification-assistance" class="btn btn-success" role="button">Explore</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>
+<div th:replace="fragments/footer.html :: footer"></div>
+</body>
+</html>

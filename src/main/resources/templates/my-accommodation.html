@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Management System</title>
+    <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+            integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+            crossorigin="anonymous"
+    >
+    <link
+            href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.css"
+            rel="stylesheet"
+            type='text/css'
+    >
+    <link
+            th:href="@{/assets/css/LiveChat.css}"
+            rel="stylesheet">
+
+    <link th:href="@{/assets/css/index.css}" rel="stylesheet"/>
+</head>
+<body>
+<div th:replace="fragments/header.html :: header"></div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@7.12.15/dist/sweetalert2.all.min.js"></script>
+<script th:fragment="script5"
+        src="https://code.jquery.com/jquery-3.7.1.slim.min.js"
+        integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8="
+        crossorigin="anonymous"></script>
+<script th:fragment="script6" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<script th:fragment="script7" src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap4.min.js"></script>
+
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-12">
+
+
+            <div id="addAccommodationForm" style="display: none;">
+                <h3>Add a new Accommodation</h3>
+                <form action="/add-accommodation" th:object="${AddAccommodationForm}" method="post" class=""
+                      enctype="multipart/form-data">
+                    <input hidden="hidden" type="number" class="form-control" id="id" name="id">
+
+                    <div class="form-group">
+                        <label for="title">Title</label>
+                        <input type="text" class="form-control" id="title" name="title"
+                               placeholder="Enter Accommodation Title">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="price">Accommodation Price</label>
+                        <input type="number" class="form-control" id="price" name="price"
+                               placeholder="Enter Accommodation Price">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description">Accommodation Description</label>
+                        <textarea class="form-control" id="description" name="description"
+                                  placeholder="Enter Accommodation Description"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="address">Accommodation Address</label>
+                        <textarea class="form-control" id="address" name="address"
+                                  placeholder="Enter Accommodation Address"></textarea>
+                    </div>
+
+
+                    <br>
+                    <div class="preview">
+                        <img class="rounded-circle text-center" height="110" width="110"
+                             id="file-ip-1-preview" alt="Accommodation image">
+                    </div>
+
+                    <label for="file" class="btn btn-dark btn-block btn-lg"
+                           data-mdb-ripple-color="dark">Upload Image
+                    </label>
+                    <input
+                            name="file" type="file" id="file"
+                            style="display: none;" accept="image/*"
+                            onchange="showPreview(event);">
+
+                    <br><br>
+
+                    <div class="mb-3 d-flex justify-content-end">
+                        <button type="submit" class="btn btn-primary ">Save Accommodation</button>
+                    </div>
+
+                    <br><br>
+                </form>
+            </div>
+
+
+            <h1 class="mb-4">My Accommodations</h1>
+            <div class="mb-3 d-flex justify-content-end">
+                <button type="button" class="btn btn-primary" data-toggle="modal"
+                        data-target="#addAccommodationModal"
+                        onclick="toggleForm()">Add New Accommodation
+                </button>
+            </div>
+
+
+            <table id="accommodationTable" class="table table-striped table-bordered">
+                <thead>
+                <tr>
+                    <th>Accommodation Image</th>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Address</th>
+                    <th>Status</th>
+                    <th>Price</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- Category rows will be dynamically added here using Thymeleaf -->
+                <tr th:each="accommodation : ${accommodations}">
+                    <td><img th:src="@{'data:image/jpeg;base64,'+${accommodation.generateBase64Image()}}" alt="Accommodation Image"
+                             style="max-width: 100px; max-height: 100px;" class="accommodation-image"></td>
+                    <td th:text="${accommodation.title}" id="accommodationName"></td>
+                    <td th:text="${accommodation.description}"></td>
+                    <td th:text="${accommodation.address}"></td>
+                    <td th:text="${accommodation.status}"></td>
+                    <td th:text="${accommodation.price}"></td>
+                    <td>
+                        <button type="button" class="btn btn-primary btn-sm edit-button">Edit</button>
+                        <a th:href="@{'/delete-accommodation?accommodationId=' + ${accommodation.id}}">
+                            <button type="button" class="btn btn-danger btn-sm">Delete</button>
+                        </a>
+                    </td>
+                    <td th:text="${accommodation.id}" hidden="hidden"></td>
+                </tr>
+                </tbody>
+            </table>
+            <br><br>
+        </div>
+        <input th:value="${success}" disabled hidden="hidden" id="accommodationAdded">
+        <input th:value="${message}" disabled hidden="hidden" id="message">
+
+    </div>
+</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.1.4/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+
+<div th:replace="~{fragments/footer::footer}"></div>
+
+
+<script>
+
+    const editButtons = document.querySelectorAll('.edit-button');
+
+    $(document).ready(function () {
+
+            // Initialize DataTable for accommodations table
+            $('#accommodationTable').DataTable({
+                "order": [] // Disable initial sorting
+            });
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+
+        var accommodationAdded = document.getElementById('accommodationAdded').value;
+
+        if (accommodationAdded != 'null') {
+            var message = document.getElementById('message').value;
+
+            if (accommodationAdded === 'true') {
+                swal({
+                    title: "Success!",
+                    text: message,
+                    icon: "success",
+                    button: "close!",
+                });
+            } else if (accommodationAdded === 'false') {
+                swal({
+                    title: "Failure!",
+                    text: message,
+                    icon: "failure",
+                    button: "close!",
+                });
+            }
+        }
+    });
+
+
+    function toggleForm() {
+        var form = document.getElementById('addAccommodationForm');
+        document.getElementById('id').value = 0;
+        if (form.style.display === 'none') {
+            form.style.display = 'block';
+        } else {
+            form.style.display = 'none';
+        }
+    }
+
+
+    editButtons.forEach(button => {
+        button.addEventListener('click', function () {
+            var form = document.getElementById('addAccommodationForm');
+            const row = this.closest('tr');
+
+            var accommodationTitle = document.getElementById('title').value = row.querySelector('td:nth-child(2)').textContent.trim();
+            var accommodationPrice = document.getElementById('price').value = row.querySelector('td:nth-child(6)').textContent.trim();
+            var accommodationDescription = document.getElementById('description').value = row.querySelector('td:nth-child(3)').textContent.trim();
+            var accommodationAddress = document.getElementById('address').value = row.querySelector('td:nth-child(4)').textContent.trim();
+            var id = document.getElementById('id').value = row.querySelector('td:nth-child(8)').textContent.trim();
+
+            console.log(row.querySelector('td:nth-child(8)').textContent.trim())
+
+
+            const imageSrc = row.querySelector('.accommodation-image').getAttribute('src');
+
+            var preview = document.getElementById("file-ip-1-preview");
+            preview.src = imageSrc;
+            preview.style.display = "";
+
+            form.style.display = 'block';
+        });
+    });
+
+
+    function showPreview(event) {
+        if (event.target.files.length > 0) {
+            var src = URL.createObjectURL(event.target.files[0]);
+            var preview = document.getElementById("file-ip-1-preview");
+            preview.src = src;
+            preview.style.display = "";
+        }
+    }
+</script>
+
+
+</body>
+</html>
