@@ -13,5 +13,10 @@ import com.gdpdemo.GDPSprint1Project.Event;
 
 public interface EventRepository extends JpaRepository<Event, Integer>{
 	
-	
+	 List<Event> findAllByUserNotAndAvailableSeatsGreaterThanAndUsersNotContaining(User user, int availableSeats, User user1);
+    List<Event> findAllByUser(User user);
+
+    Optional<Event> getEventByUserAndId(User user, Long id);
+
+    Set<Event> findByUsers(User user);
 }

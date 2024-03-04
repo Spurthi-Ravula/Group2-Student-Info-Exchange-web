@@ -64,6 +64,15 @@ public class HomeController {
 		return "dummy";
 	}
 
+	@GetMapping("/events")
+    	public String events(Model model) {
+        List<Event> events = eventService.getAvailableEvents();
+        model.addAttribute("events", events);
+        model.addAttribute("success", "");
+        model.addAttribute("message", "");
+
+        return "event";
+    }
 	@RequestMapping("/send-otp")
 	public String sendOtp(@RequestParam("email") String email, HttpSession session) throws MessagingException {
 		System.out.println("EMAIL" + email);
