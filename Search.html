@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Information Exchange</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Student Information Exchange</h1>
+    <form id="searchForm">
+        <input type="text" id="searchInput" placeholder="Search students...">
+        <button type="submit">Search</button>
+    </form>
+    <div id="searchResults"></div>
+    
+    <script src="script.js"></script>
+</body>
+<body> {
+    font-family: Arial, sans-serif;
+}
+
+h1 {
+    text-align: center;
+}
+
+form {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#searchInput {
+    padding: 5px;
+    width: 200px;
+}
+
+button {
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+#searchResults {
+    margin: 0 auto;
+    width: 80%;
+}
+</body>
+document.getElementById('searchForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    let searchQuery = document.getElementById('searchInput').value;
+
+    // Send AJAX request to PHP script
+    let xhr = new XMLHttpRequest();
+    xhr.open('GET', 'search.php?query=' + searchQuery, true);
+    xhr.onload = function() {
+        if (xhr.status == 200) {
+            document.getElementById('searchResults').innerHTML = xhr.responseText;
+        } else {
+            console.log('Request failed. Status: ' + xhr.status);
+        }
+    };
+    xhr.send();
+});
+body<>
+</html>
