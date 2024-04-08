@@ -23,28 +23,30 @@ public class SpringSecurity {
 		return new BCryptPasswordEncoder();
 	}
 
-	@SuppressWarnings("removal")
 	@Bean
-	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-		http.csrf().disable()
-		.authorizeHttpRequests((authorize) ->
-		authorize
-		.requestMatchers("/register/**").permitAll()
-		.anyRequest().authenticated()
-				)
-		.formLogin(
-				form -> form
-				.loginPage("/login")
-				.loginProcessingUrl("/login")
-				.defaultSuccessUrl("/index")
-				.permitAll()
-				).logout(
-						logout -> logout
-						.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-						.permitAll()
-						);
-		return http.build();
-	}
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http.csrf().disable()
+            .authorizeHttpRequests(authorize ->
+                authorize
+                    .requestMatchers("/register/**").permitAll()
+                    .requestMatchers("/assets/**").permitAll() // Allow access to the assets folder
+                    .anyRequest().authenticated()
+            )
+            .formLogin(
+                form -> form
+                    .loginPage("/login")
+                    .loginProcessingUrl("/login")
+                    .defaultSuccessUrl("/index")
+                    .permitAll()
+            )
+            .logout(
+                logout -> logout
+                    .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                    .permitAll()
+            );
+
+        return http.build();
+    }
 
 	@Autowired
 	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
