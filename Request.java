@@ -21,10 +21,6 @@ public class Request {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "request_to")
-    private User requestTo;
-
     private String requestType;
     private String description;
 

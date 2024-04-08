@@ -118,8 +118,8 @@ public class MainController {
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("success", false);
             redirectAttributes.addFlashAttribute("message", "Given email not associated with us.");
-            redirectAttributes.addFlashAttribute("message", "An error occurred: " + e.getMessage());
         }
+
         return "redirect:/certification-assistance";
     }
     
