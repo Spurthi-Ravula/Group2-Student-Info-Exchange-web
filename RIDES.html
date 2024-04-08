@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head::head}">
+<body>
+<div th:replace="fragments/header.html :: header"></div>
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-12">
+
+            <div id="addRideForm" style="display: none;">
+                <h3>Add a new Ride</h3>
+                <form action="/add-ride" th:object="${AddRideForm}" method="post" class=""
+                      enctype="multipart/form-data" onsubmit="validateAddRideForm()">
+                    <input hidden="hidden" type="number" class="form-control" id="id" name="id">
+
+                    <div class="form-group">
+                        <label for="title">Title</label>
+                        <input type="text" class="form-control" id="title" name="title"
+                               placeholder="Enter Ride Title">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="price">Ride Price</label>
+                        <input type="number" class="form-control" id="price" name="price"
+                               placeholder="Enter Ride Price">
+                    </div>
+					
+					<div class="form-group">
+                        <label for="availableSeats">Available Seats</label>
+                        <input type="number" class="form-control" id="availableSeats" name="availableSeats"
+                               placeholder="Enter No, of available seats (Max 7)">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description">Ride Description</label>
+                        <textarea class="form-control" id="description" name="description"
+                                  placeholder="Enter Ride Description"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="from">From Address</label>
+                        <textarea class="form-control" id="from" name="from"
+                                  placeholder="Enter From Address"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="to">To Address</label>
+                        <textarea class="form-control" id="to" name="to"
+                                  placeholder="Enter To Address"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="dateTime">Date time</label>
+                        <input type="datetime-local" class="form-control" id="dateTime" name="dateTime"
+                                  placeholder="Select date time">
+                    </div>
+                    <br>
+                    <div class="mb-3 d-flex justify-content-end">
+                        <button type="submit" class="btn btn-primary ">Save Ride</button>
+                    </div>
+                    <br><br>
+                </form>
+            </div>
+
+			<div class="mb-5 d-flex justify-content-end">
+                <button type="button" class="btn btn-primary" data-toggle="modal"
+                        data-target="#addRideModal"
+                        onclick="toggleForm()">Add New Ride
+                </button>
+            </div>
+
+			<h1 class="mb-4 text-center">Reserved Rides</h1>
+
+            <table id="reservedRidesTable" class="table table-striped table-bordered">
+                <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>From</th>
+                    <th>To</th>
+                    <th>Date/Time</th>
+                    <th>Price</th>
+					<th>Seats</th>
+                    <th>Description</th>
+					<th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- Category rows will be dynamically added here using Thymeleaf -->
+                <tr th:each="ride : ${reservedRides}">
+                    <td th:text="${ride.title}"></td>
+                    <td th:text="${ride.from}"></td>
+                    <td th:text="${ride.to}"></td>
+                    <td th:text="${ride.dateTime}"></td>
+                    <td th:text="${ride.price}"></td>
+					<td th:text="${ride.availableSeats}"></td>
+                    <td th:text="${ride.description}"></td>
+					<td>
+                        <a th:href="@{'/cancel-reserved-ride?rideId=' + ${ride.id}}">
+                            <button type="button" class="btn btn-danger btn-sm">Cancel</button>
+                        </a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <br><br>
+
+            <h1 class="mb-4 text-center">My Rides</h1>
+
+            <table id="ridesTable" class="table table-striped table-bordered">
+                <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>From</th>
+                    <th>To</th>
+                    <th>Date/Time</th>
+                    <th>Price</th>
+					<th>Seats</th>
+                    <th>Description</th>
+                    <th>Actions</th>
+                    <th hidden="hidden">id</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- Category rows will be dynamically added here using Thymeleaf -->
+                <tr th:each="ride : ${rides}">
+                    <td th:text="${ride.title}"></td>
+                    <td th:text="${ride.from}"></td>
+                    <td th:text="${ride.to}"></td>
+                    <td th:text="${ride.dateTime}"></td>
+                    <td th:text="${ride.price}"></td>
+					<td th:text="${ride.availableSeats}"></td>
+                    <td th:text="${ride.description}"></td>
+                    <td>
+                        <button type="button" class="btn btn-primary btn-sm edit-button">Edit</button>
+                        <a th:href="@{'/delete-ride?rideId=' + ${ride.id}}">
+                            <button type="button" class="btn btn-danger btn-sm">Delete</button>
+                        </a>
+                    </td>
+                    <td th:text="${ride.id}" hidden="hidden"></td>
+                </tr>
+                </tbody>
+            </table>
+            <br><br>
+        </div>
+        <input th:value="${success}" disabled hidden="hidden" id="success">
+        <input th:value="${message}" disabled hidden="hidden" id="message">
+
+    </div>
+</div>
+
+
+<div th:replace="~{fragments/footer::footer}"></div>
+
+
+<script>
+
+    $(document).ready(function () {
+		// Initialize DataTable for reserved rides table
+        $('#reservedRidesTable').DataTable({
+            "order": []
+        });
+        // Initialize DataTable for rides table
+        $('#ridesTable').DataTable({
+            "order": []
+        });
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+
+        var success = document.getElementById('success').value;
+
+        if (success != 'null') {
+            var message = document.getElementById('message').value;
+
+            if (success === 'true') {
+                swal({
+                    title: "Success!",
+                    text: message,
+                    icon: "success",
+                    button: "close!",
+                });
+            } else if (success === 'false') {
+                swal({
+                    title: "Failure!",
+                    text: message,
+                    icon: "failure",
+                    button: "close!",
+                });
+            }
+        }
+    });
+
+    const editButtons = document.querySelectorAll('.edit-button');
+    function toggleForm() {
+        var form = document.getElementById('addRideForm');
+        document.getElementById('id').value = 0;
+        if (form.style.display === 'none') {
+            form.style.display = 'block';
+        } else {
+            form.style.display = 'none';
+        }
+    }
+
+    editButtons.forEach(button => {
+        button.addEventListener('click', function () {
+            var form = document.getElementById('addRideForm');
+            const row = this.closest('tr');
+
+            var title = document.getElementById('title').value = row.querySelector('td:nth-child(1)').textContent.trim();
+            var from = document.getElementById('from').value = row.querySelector('td:nth-child(2)').textContent.trim();
+            var to = document.getElementById('to').value = row.querySelector('td:nth-child(3)').textContent.trim();
+            var price = document.getElementById('price').value = row.querySelector('td:nth-child(5)').textContent.trim();
+            var description = document.getElementById('description').value = row.querySelector('td:nth-child(6)').textContent.trim();
+            var id = document.getElementById('id').value = row.querySelector('td:nth-child(8)').textContent.trim();
+
+            var datetime = new Date(row.querySelector('td:nth-child(4)').textContent.trim());
+            var formattedDatetime = datetime.getFullYear() + '-' +
+                ('0' + (datetime.getMonth() + 1)).slice(-2) + '-' +
+                ('0' + datetime.getDate()).slice(-2) + 'T' +
+                ('0' + datetime.getHours()).slice(-2) + ':' +
+                ('0' + datetime.getMinutes()).slice(-2);
+            var dateTime = document.getElementById('dateTime').value = formattedDatetime;
+
+            form.style.display = 'block';
+        });
+    });
+
+    function validateAddRideForm() {
+        const title = document.getElementById('title').value;
+        const price = document.getElementById('price').value;
+		const availableSeats = document.getElementById('availableSeats').value;
+        const description = document.getElementById('description').value;
+        const address = document.getElementById('address').value;
+		const selectedDate = new Date(document.getElementById('datetime').value);
+        const currentDate = new Date();
+
+        if (title.trim() === '' || price.trim() === '' || description.trim() === '' || address.trim() === '' || availableSeats.trim() === '') {
+            swal({
+                title: "Failure!",
+                text: "Input fields cannot be empty",
+                icon: "failure",
+                button: "close!",
+            });
+
+            event.preventDefault();
+            return false;
+        }
+
+		if (price.trim() <= 0 || price.trim() >= 1000000) {
+            swal({
+                title: "Failure!",
+                text: "Invalid price value.",
+                icon: "failure",
+                button: "close!",
+            });
+
+            event.preventDefault();
+            return false;
+        }
+
+		if (availableSeats.trim() <= 0 || availableSeats.trim() >= 8) {
+            swal({
+                title: "Failure!",
+                text: "Invalid available seats value.",
+                icon: "failure",
+                button: "close!",
+            });
+
+            event.preventDefault();
+            return false;
+        }
+
+		if (selectedDate < currentDate) {
+			swal({
+                title: "Failure!",
+                text: "Past Date is not allowed.",
+                icon: "failure",
+                button: "close!",
+            });
+
+            event.preventDefault();
+            return false;
+    	}
+
+    }
+
+
+</script>
+</body>
+</html>
