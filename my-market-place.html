@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head::head}">
+<body>
+<div th:replace="fragments/header.html :: header"></div>
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-12">
+
+
+            <div id="addMarketPlaceForm" style="display: none;">
+                <h3>Add a new product</h3>
+                <form action="/add-market-place" th:object="${AddMarketPlaceForm}" method="post" class=""
+                      enctype="multipart/form-data" onsubmit="validateAddMarketPlaceForm()">
+                    <input hidden="hidden" type="number" class="form-control" id="id" name="id">
+
+                    <div class="form-group">
+                        <label for="title">Title</label>
+                        <input type="text" class="form-control" id="title" name="title"
+                               placeholder="Enter product Title">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="price">product Price</label>
+                        <input type="number" class="form-control" id="price" name="price"
+                               placeholder="Enter product Price">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description">product Description</label>
+                        <textarea class="form-control" id="description" name="description"
+                                  placeholder="Enter product Description"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="address">product Address</label>
+                        <textarea class="form-control" id="address" name="address"
+                                  placeholder="Enter product Address"></textarea>
+                    </div>
+
+
+                    <br>
+                    <div class="preview">
+                        <img class="rounded-circle text-center" height="110" width="110"
+                             id="file-ip-1-preview" alt="product image">
+                    </div>
+
+                    <label for="file" class="btn btn-dark btn-block btn-lg"
+                           data-mdb-ripple-color="dark">Upload Image
+                    </label>
+                    <input
+                            name="file" type="file" id="file"
+                            style="display: none;" accept="image/*"
+                            onchange="showPreview(event);">
+
+                    <br><br>
+
+                    <div class="mb-3 d-flex justify-content-end">
+                        <button type="submit" class="btn btn-primary ">Save product</button>
+                    </div>
+
+                    <br><br>
+                </form>
+            </div>
+			
+			<div class="mb-5 d-flex justify-content-end">
+                <button type="button" class="btn btn-primary" data-toggle="modal"
+                        data-target="#addmarketPlaceModal"
+                        onclick="toggleForm()">Add New product
+                </button>
+            </div>
+
+			<h1 class="mb-4 text-center">Reserved products</h1>
+
+            <table id="reservedMarketPlaceTable" class="table table-striped table-bordered">
+                <thead>
+                <tr>
+                    <th>Product Image</th>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Address</th>
+                    <th>Status</th>
+                    <th>Price</th>
+					<th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- Category rows will be dynamically added here using Thymeleaf -->
+                <tr th:each="marketPlace : ${reservedMarketPlaces}">
+                    <td><img th:src="@{'data:image/jpeg;base64,'+${marketPlace.generateBase64Image()}}"
+                             alt="marketPlace Image"
+                             style="max-width: 100px; max-height: 100px;" class="marketPlace-image"></td>
+                    <td th:text="${marketPlace.title}" id="marketPlaceName"></td>
+                    <td th:text="${marketPlace.description}"></td>
+                    <td th:text="${marketPlace.address}"></td>
+                    <td th:text="${marketPlace.status}"></td>
+                    <td th:text="${marketPlace.price}"></td>
+					<td>
+                        <a th:href="@{'/cancel-reserved-market-place?marketPlaceId=' + ${marketPlace.id}}">
+                            <button type="button" class="btn btn-danger btn-sm">Cancel</button>
+                        </a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <br><br>
+
+            <h1 class="mb-4 text-center">My products</h1>
+
+            <table id="marketPlaceTable" class="table table-striped table-bordered">
+                <thead>
+                <tr>
+                    <th>Product Image</th>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Address</th>
+                    <th>Status</th>
+                    <th>Price</th>
+                    <th>Actions</th>
+                    <th hidden="hidden">id</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- Category rows will be dynamically added here using Thymeleaf -->
+                <tr th:each="marketPlace : ${marketPlaces}">
+                    <td><img th:src="@{'data:image/jpeg;base64,'+${marketPlace.generateBase64Image()}}"
+                             alt="marketPlace Image"
+                             style="max-width: 100px; max-height: 100px;" class="marketPlace-image"></td>
+                    <td th:text="${marketPlace.title}" id="marketPlaceName"></td>
+                    <td th:text="${marketPlace.description}"></td>
+                    <td th:text="${marketPlace.address}"></td>
+                    <td th:text="${marketPlace.status}"></td>
+                    <td th:text="${marketPlace.price}"></td>
+                    <td>
+                        <button type="button" class="btn btn-primary btn-sm edit-button">Edit</button>
+                        <a th:href="@{'/delete-market-place?marketPlaceId=' + ${marketPlace.id}}">
+                            <button type="button" class="btn btn-danger btn-sm">Delete</button>
+                        </a>
+                    </td>
+                    <td th:text="${marketPlace.id}" hidden="hidden"></td>
+                </tr>
+                </tbody>
+            </table>
+            <br><br>
+        </div>
+        <input th:value="${success}" disabled hidden="hidden" id="marketPlaceAdded">
+        <input th:value="${message}" disabled hidden="hidden" id="message">
+
+    </div>
+</div>
+
+
+<div th:replace="~{fragments/footer::footer}"></div>
+
+
+<script>
+
+    const editButtons = document.querySelectorAll('.edit-button');
+
+    $(document).ready(function () {
+		// Initialize DataTable for reservedMarketPlaces table
+		$('#reservedMarketPlaceTable').DataTable({
+            "order": [] // Disable initial sorting
+        });
+        // Initialize DataTable for marketPlaces table
+        $('#marketPlaceTable').DataTable({
+            "order": [] // Disable initial sorting
+        });
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+
+        var marketPlaceAdded = document.getElementById('marketPlaceAdded').value;
+
+        if (marketPlaceAdded != 'null') {
+            var message = document.getElementById('message').value;
+
+            if (marketPlaceAdded === 'true') {
+                swal({
+                    title: "Success!",
+                    text: message,
+                    icon: "success",
+                    button: "close!",
+                });
+            } else if (marketPlaceAdded === 'false') {
+                swal({
+                    title: "Failure!",
+                    text: message,
+                    icon: "failure",
+                    button: "close!",
+                });
+            }
+        }
+    });
+
+
+    function toggleForm() {
+        var form = document.getElementById('addMarketPlaceForm');
+        document.getElementById('id').value = 0;
+        if (form.style.display === 'none') {
+            form.style.display = 'block';
+        } else {
+            form.style.display = 'none';
+        }
+    }
+
+
+    editButtons.forEach(button => {
+        button.addEventListener('click', function () {
+            var form = document.getElementById('addMarketPlaceForm');
+            const row = this.closest('tr');
+
+            var marketPlaceTitle = document.getElementById('title').value = row.querySelector('td:nth-child(2)').textContent.trim();
+            var marketPlacePrice = document.getElementById('price').value = row.querySelector('td:nth-child(6)').textContent.trim();
+            var marketPlaceDescription = document.getElementById('description').value = row.querySelector('td:nth-child(3)').textContent.trim();
+            var marketPlaceAddress = document.getElementById('address').value = row.querySelector('td:nth-child(4)').textContent.trim();
+            var id = document.getElementById('id').value = row.querySelector('td:nth-child(8)').textContent.trim();
+
+            console.log(row.querySelector('td:nth-child(8)').textContent.trim())
+
+
+            const imageSrc = row.querySelector('.marketPlace-image').getAttribute('src');
+
+            var preview = document.getElementById("file-ip-1-preview");
+            preview.src = imageSrc;
+            preview.style.display = "";
+
+            form.style.display = 'block';
+        });
+    });
+
+
+    function showPreview(event) {
+        if (event.target.files.length > 0) {
+            var src = URL.createObjectURL(event.target.files[0]);
+            var preview = document.getElementById("file-ip-1-preview");
+            preview.src = src;
+            preview.style.display = "";
+        }
+    }
+
+    function validateAddMarketPlaceForm() {
+        const title = document.getElementById('title').value;
+        const price = document.getElementById('price').value;
+        const description = document.getElementById('description').value;
+        const address = document.getElementById('address').value;
+
+        if (title.trim() === '' || price.trim() === '' || description.trim() === '' || address.trim() === '') {
+            swal({
+                title: "Failure!",
+                text: "Input fields cannot be empty",
+                icon: "failure",
+                button: "close!",
+            });
+
+            event.preventDefault();
+            return false;
+        }
+        if (price.trim() < 0 || price.trim() >= 1000000) {
+            swal({
+                title: "Failure!",
+                text: "Invalid price value",
+                icon: "failure",
+                button: "close!",
+            });
+
+            event.preventDefault();
+            return false;
+        }
+
+        const fileInput = document.getElementById('file');
+        const file = fileInput.files[0];
+
+        if (file) {
+            const fileSize = file.size; // Size of the file in bytes
+            const maxSize = 2 * 1024 * 1024; // 2 MB in bytes
+
+            if (fileSize > maxSize) {
+                swal({
+                    title: "Failure!",
+                    text: "File size cannot be more than 2MB",
+                    icon: "failure",
+                    button: "close!",
+                });
+                event.preventDefault();
+                return false;
+            }
+        } else {
+            swal({
+                title: "Failure!",
+                text: "Please upload image",
+                icon: "failure",
+                button: "close!",
+            });
+            event.preventDefault();
+            return false;
+        }
+    }
+</script>
+
+
+</body>
+</html>

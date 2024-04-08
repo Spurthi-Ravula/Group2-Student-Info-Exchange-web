@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head::head}">
+<body>
+<div th:replace="fragments/header.html :: header"></div>
+
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-12">
+
+			<div class="mb-5 d-flex justify-content-between">
+				<input type="text" id="searchbar" name="search" placeholder="Search by title ...">
+                <a th:href="@{/my-market-place}">
+                    <button type="button" class="btn btn-primary" data-toggle="modal"
+                            data-target="#addMarketPlaceModal">My products
+                    </button>
+                </a>
+            </div>
+
+            <h1 class="mb-4 text-center">Available products</h1>
+
+            <div class="row">
+                <div th:each="marketPlace : ${marketPlaces}" class="col-md-4 mb-4">
+
+                    <div class="card-marketPlace">
+                        <a th:href="@{'/products?marketPlaceId=' + ${marketPlace.id}}">
+                            <img th:src="@{'data:image/jpeg;base64,'+${marketPlace.generateBase64Image()}}"
+                                 alt="marketPlace Image" class="card-accommodation-img-top">
+                        </a>
+                        <div class="card-body">
+                            <h5 class="card-title" th:text="${marketPlace.title}"></h5>
+                            <p class="card-title" th:text="'Address: ' +${marketPlace.address}"></p>
+                            <p class="card-title" th:text="'Description: ' +${marketPlace.description}"></p>
+                            <p class="card-title" th:text="'Price: $' + ${marketPlace.price}"></p>
+                            <div class="mb-3 d-flex justify-content-end">
+                                <button type="button" class="btn btn-primary" data-toggle="modal"
+                                        onclick="confirmReservation(this)" th:value="${marketPlace.id}"
+                                        data-target="#addmarketPlaceModal">Reserve Product
+                                </button>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <input th:value="${success}" disabled hidden="hidden" id="success">
+    <input th:value="${message}" disabled hidden="hidden" id="message">
+
+</div>
+<div th:replace="~{fragments/footer::footer}"></div>
+<script>
+
+    document.addEventListener('DOMContentLoaded', function () {
+
+        var success = document.getElementById('success').value;
+
+        if (success != 'null') {
+            var message = document.getElementById('message').value;
+
+            if (success === 'true') {
+                swal({
+                    title: "Success!",
+                    text: message,
+                    icon: "success",
+                    button: "close!",
+                });
+            } else if (success === 'false') {
+                swal({
+                    title: "Failure!",
+                    text: message,
+                    icon: "failure",
+                    button: "close!",
+                });
+            }
+        }
+
+		$('#searchbar').keyup(function(){
+        	let marketPlaces = $('.card-marketPlace').parent();
+        	let keyword = $(this).val().toLowerCase();
+        	if(keyword == "")
+            	marketPlaces.show();
+        	else{
+            	marketPlaces.each(function(element) {
+                	let title = $(this).find('.card-title').text().toLowerCase();
+                	(title.indexOf(keyword) >= 0) ? $(this).show() : $(this).hide();
+            	});
+        	}
+    	});
+    });
+
+    function confirmReservation(button) {
+
+        const id = button.value;
+        console.log(id);
+        swal({
+            title: 'Are you sure?',
+            text: 'Do you want to reserve the product?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, Reserve',
+            cancelButtonText: 'No, cancel',
+        }).then((result) => {
+            if (result.value === true) {
+                console.log(result)
+                console.log(result.isConfirmed)
+                window.location.href = '/reserve-market-place?id=' + id;
+            } else {
+                console.log(result)
+                console.log(result.isConfirmed)
+                // If the user cancels, prevent the default action
+                event.preventDefault();
+            }
+        });
+    }
+</script>
+</body>
+</html>
