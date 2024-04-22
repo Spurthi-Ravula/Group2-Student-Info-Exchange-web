@@ -1,0 +1,44 @@
+div.container {
+	min-height: 80vh;
+}
+
+.thumbnail-img {
+	width: 50%;
+	height: 270px;
+	margin-bottom: 20px;
+}
+
+.card-accommodation {
+	/*height: 400px;  Set a fixed height for the card */
+	overflow: auto;
+    max-height: 500px;
+}
+
+.card-accommodation-img-top {
+	height: 200px; /* Set a fixed height for the image */
+	width: 100%; /* Make sure the image takes the full width of the card */
+	object-fit: cover; /* Maintain aspect ratio and cover the container */
+}
+
+
+.card-product-img-top {
+	height: 40%; /* Set a fixed height for the image */
+	width: 100%; /* Make sure the image takes the full width of the card */
+	object-fit: cover; /* Maintain aspect ratio and cover the container */
+}
+
+.card-product {
+	height: 550px; /* Set a fixed height for the card */
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}

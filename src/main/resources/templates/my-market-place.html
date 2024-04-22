@@ -7,53 +7,41 @@
     <div class="container mt-5">
       <div class="row">
         <div class="col-md-12">
-          <div id="addAccommodationForm" style="display: none">
-            <h3>Add a new Accommodation</h3>
+          <div id="addMarketPlaceForm" style="display: none">
+            <h3>Add a new product</h3>
             <form
-              action="/add-accommodation"
-              th:object="${AddAccommodationForm}"
+              action="/add-market-place"
+              th:object="${AddMarketPlaceForm}"
               method="post"
               class=""
               enctype="multipart/form-data"
-              onsubmit="validateAddAccommodationForm()"
+              onsubmit="validateAddMarketPlaceForm()"
             >
               <input hidden="hidden" type="number" class="form-control" id="id" name="id" />
 
               <div class="form-group">
                 <label for="title">Title</label>
-                <input type="text" class="form-control" id="title" name="title" placeholder="Enter Accommodation Title" required />
+                <input type="text" class="form-control" id="title" name="title" placeholder="Enter product Title" required />
               </div>
 
               <div class="form-group">
-                <label for="price">Accommodation Price</label>
-                <input type="number" class="form-control" id="price" name="price" placeholder="Enter Accommodation Price" required />
+                <label for="price">product Price</label>
+                <input type="number" class="form-control" id="price" name="price" placeholder="Enter product Price" required />
               </div>
 
               <div class="form-group">
-                <label for="description">Accommodation Description</label>
-                <textarea class="form-control" id="description" name="description" placeholder="Enter Accommodation Description" required></textarea>
+                <label for="description">product Description</label>
+                <textarea class="form-control" id="description" name="description" placeholder="Enter product Description" required></textarea>
               </div>
 
               <div class="form-group">
-                <label for="address">Accommodation Address</label>
-                <textarea class="form-control" id="address" name="address" placeholder="Enter Accommodation Address" required></textarea>
-              </div>
-
-              <div class="form-group">
-                <label for="availableFrom">Available From</label>
-                <input
-                  type="datetime-local"
-                  class="form-control"
-                  id="availableFrom"
-                  name="availableFrom"
-                  placeholder="Enter date of availability"
-                  required
-                />
+                <label for="address">product Address</label>
+                <textarea class="form-control" id="address" name="address" placeholder="Enter product Address" required></textarea>
               </div>
 
               <br />
               <div class="preview">
-                <img class="rounded-circle text-center" height="110" width="110" id="file-ip-1-preview" alt="Accommodation image" />
+                <img class="rounded-circle text-center" height="110" width="110" id="file-ip-1-preview" alt="product image" />
               </div>
 
               <label for="file" class="btn btn-dark btn-block btn-lg" data-mdb-ripple-color="dark">Upload Image </label>
@@ -62,7 +50,7 @@
               <br /><br />
 
               <div class="mb-3 d-flex justify-content-end">
-                <button type="submit" class="btn btn-primary">Save Accommodation</button>
+                <button type="submit" class="btn btn-primary">Save product</button>
               </div>
 
               <br /><br />
@@ -70,20 +58,20 @@
           </div>
 
           <div class="mb-5 d-flex justify-content-end">
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addAccommodationModal" onclick="toggleForm()">
-              Add New Accommodation
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addmarketPlaceModal" onclick="toggleForm()">
+              Add New product
             </button>
           </div>
 
-          <h1 class="mb-4 text-center">Reserved Accommodations</h1>
-          <table id="reservedAccommodationsTable" class="table table-striped table-bordered">
+          <h1 class="mb-4 text-center">Reserved products</h1>
+
+          <table id="reservedMarketPlaceTable" class="table table-striped table-bordered">
             <thead>
               <tr>
-                <th>Accommodation Image</th>
+                <th>Product Image</th>
                 <th>Title</th>
                 <th>Description</th>
                 <th>Address</th>
-                <th>Available From</th>
                 <th>Status</th>
                 <th>Price</th>
                 <th>Action</th>
@@ -91,23 +79,22 @@
             </thead>
             <tbody>
               <!-- Category rows will be dynamically added here using Thymeleaf -->
-              <tr th:each="accommodation : ${reservedAccommodations}">
+              <tr th:each="marketPlace : ${reservedMarketPlaces}">
                 <td>
                   <img
-                    th:src="@{'data:image/jpeg;base64,'+${accommodation.generateBase64Image()}}"
-                    alt="Accommodation Image"
+                    th:src="@{'data:image/jpeg;base64,'+${marketPlace.generateBase64Image()}}"
+                    alt="marketPlace Image"
                     style="max-width: 100px; max-height: 100px"
-                    class="accommodation-image"
+                    class="marketPlace-image"
                   />
                 </td>
-                <td th:text="${accommodation.title}" id="accommodationName"></td>
-                <td th:text="${accommodation.description}"></td>
-                <td th:text="${accommodation.address}"></td>
-                <td th:text="${accommodation.availableFrom}"></td>
-                <td th:text="${accommodation.status}"></td>
-                <td th:text="${accommodation.price}"></td>
+                <td th:text="${marketPlace.title}" id="marketPlaceName"></td>
+                <td th:text="${marketPlace.description}"></td>
+                <td th:text="${marketPlace.address}"></td>
+                <td th:text="${marketPlace.status}"></td>
+                <td th:text="${marketPlace.price}"></td>
                 <td>
-                  <a th:href="@{'/cancel-reserved-accommodation?accommodationId=' + ${accommodation.id}}">
+                  <a th:href="@{'/cancel-reserved-market-place?marketPlaceId=' + ${marketPlace.id}}">
                     <button type="button" class="btn btn-danger btn-sm">Cancel</button>
                   </a>
                 </td>
@@ -116,16 +103,15 @@
           </table>
           <br /><br />
 
-          <h1 class="mb-4 text-center">My Accommodations</h1>
+          <h1 class="mb-4 text-center">My products</h1>
 
-          <table id="accommodationTable" class="table table-striped table-bordered">
+          <table id="marketPlaceTable" class="table table-striped table-bordered">
             <thead>
               <tr>
-                <th>Accommodation Image</th>
+                <th>Product Image</th>
                 <th>Title</th>
                 <th>Description</th>
                 <th>Address</th>
-                <th>Available From</th>
                 <th>Status</th>
                 <th>Price</th>
                 <th>Actions</th>
@@ -134,34 +120,33 @@
             </thead>
             <tbody>
               <!-- Category rows will be dynamically added here using Thymeleaf -->
-              <tr th:each="accommodation : ${accommodations}">
+              <tr th:each="marketPlace : ${marketPlaces}">
                 <td>
                   <img
-                    th:src="@{'data:image/jpeg;base64,'+${accommodation.generateBase64Image()}}"
-                    alt="Accommodation Image"
+                    th:src="@{'data:image/jpeg;base64,'+${marketPlace.generateBase64Image()}}"
+                    alt="marketPlace Image"
                     style="max-width: 100px; max-height: 100px"
-                    class="accommodation-image"
+                    class="marketPlace-image"
                   />
                 </td>
-                <td th:text="${accommodation.title}" id="accommodationName"></td>
-                <td th:text="${accommodation.description}"></td>
-                <td th:text="${accommodation.address}"></td>
-                <td th:text="${accommodation.availableFrom}"></td>
-                <td th:text="${accommodation.status}"></td>
-                <td th:text="${accommodation.price}"></td>
+                <td th:text="${marketPlace.title}" id="marketPlaceName"></td>
+                <td th:text="${marketPlace.description}"></td>
+                <td th:text="${marketPlace.address}"></td>
+                <td th:text="${marketPlace.status}"></td>
+                <td th:text="${marketPlace.price}"></td>
                 <td>
                   <button type="button" class="btn btn-primary btn-sm edit-button">Edit</button>
-                  <a th:href="@{'/delete-accommodation?accommodationId=' + ${accommodation.id}}">
+                  <a th:href="@{'/delete-market-place?marketPlaceId=' + ${marketPlace.id}}">
                     <button type="button" class="btn btn-danger btn-sm">Delete</button>
                   </a>
                 </td>
-                <td th:text="${accommodation.id}" hidden="hidden"></td>
+                <td th:text="${marketPlace.id}" hidden="hidden"></td>
               </tr>
             </tbody>
           </table>
           <br /><br />
         </div>
-        <input th:value="${success}" disabled hidden="hidden" id="accommodationAdded" />
+        <input th:value="${success}" disabled hidden="hidden" id="marketPlaceAdded" />
         <input th:value="${message}" disabled hidden="hidden" id="message" />
       </div>
     </div>
@@ -170,38 +155,32 @@
 
     <script>
       $(document).ready(function () {
-        // Initialize DataTable for reserved accommodations table
-        $('#reservedAccommodationsTable').DataTable({
+        // Initialize DataTable for reservedMarketPlaces table
+        $('#reservedMarketPlaceTable').DataTable({
           order: [], // Disable initial sorting
         });
-
-        // Initialize DataTable for accommodations table
-        $('#accommodationTable').DataTable({
+        // Initialize DataTable for marketPlaces table
+        $('#marketPlaceTable').DataTable({
           order: [], // Disable initial sorting
         });
       });
 
       document.addEventListener('DOMContentLoaded', function () {
-        const accommodationAdded = document.getElementById('accommodationAdded').value;
-        const priceInput = document.getElementById('price');
         const editButtons = document.querySelectorAll('.edit-button');
-        const dateTimeInput = document.getElementById('availableFrom');
-        const currentDate = new Date();
-        const formattedCurrentDate = currentDate.toISOString().slice(0, 16);
+        const marketPlaceAdded = document.getElementById('marketPlaceAdded').value;
+        const priceInput = document.getElementById('price');
 
-        dateTimeInput.min = formattedCurrentDate;
-
-        if (accommodationAdded != 'null') {
+        if (marketPlaceAdded != 'null') {
           const message = document.getElementById('message').value;
 
-          if (accommodationAdded === 'true') {
+          if (marketPlaceAdded === 'true') {
             swal({
               title: 'Success!',
               text: message,
               icon: 'success',
               button: 'close!',
             });
-          } else if (accommodationAdded === 'false') {
+          } else if (marketPlaceAdded === 'false') {
             swal({
               title: 'Failure!',
               text: message,
@@ -213,29 +192,16 @@
 
         editButtons.forEach((button) => {
           button.addEventListener('click', function () {
-            const form = document.getElementById('addAccommodationForm');
+            var form = document.getElementById('addMarketPlaceForm');
             const row = this.closest('tr');
 
             document.getElementById('title').value = row.querySelector('td:nth-child(2)').textContent.trim();
-            document.getElementById('price').value = row.querySelector('td:nth-child(7)').textContent.trim();
+            document.getElementById('price').value = row.querySelector('td:nth-child(6)').textContent.trim();
             document.getElementById('description').value = row.querySelector('td:nth-child(3)').textContent.trim();
             document.getElementById('address').value = row.querySelector('td:nth-child(4)').textContent.trim();
-            document.getElementById('id').value = row.querySelector('td:nth-child(9)').textContent.trim();
-            const datetime = new Date(row.querySelector('td:nth-child(5)').textContent.trim());
-            const formattedDatetime =
-              datetime.getFullYear() +
-              '-' +
-              ('0' + (datetime.getMonth() + 1)).slice(-2) +
-              '-' +
-              ('0' + datetime.getDate()).slice(-2) +
-              'T' +
-              ('0' + datetime.getHours()).slice(-2) +
-              ':' +
-              ('0' + datetime.getMinutes()).slice(-2);
+            document.getElementById('id').value = row.querySelector('td:nth-child(8)').textContent.trim();
 
-            document.getElementById('availableFrom').value = formattedDatetime;
-
-            const imageSrc = row.querySelector('.accommodation-image').getAttribute('src');
+            const imageSrc = row.querySelector('.marketPlace-image').getAttribute('src');
 
             const preview = document.getElementById('file-ip-1-preview');
             preview.src = imageSrc;
@@ -254,7 +220,7 @@
       });
 
       function toggleForm() {
-        var form = document.getElementById('addAccommodationForm');
+        var form = document.getElementById('addMarketPlaceForm');
         document.getElementById('id').value = 0;
         if (form.style.display === 'none') {
           form.style.display = 'block';
@@ -265,23 +231,20 @@
 
       function showPreview(event) {
         if (event.target.files.length > 0) {
-          const src = URL.createObjectURL(event.target.files[0]);
-          const preview = document.getElementById('file-ip-1-preview');
+          var src = URL.createObjectURL(event.target.files[0]);
+          var preview = document.getElementById('file-ip-1-preview');
           preview.src = src;
           preview.style.display = '';
         }
       }
 
-      function validateAddAccommodationForm() {
+      function validateAddMarketPlaceForm() {
         const title = document.getElementById('title').value;
+        const price = document.getElementById('price').value;
         const description = document.getElementById('description').value;
         const address = document.getElementById('address').value;
-        const availableFrom = document.getElementById('availableFrom').value;
-        const id = document.getElementById('id').value;
-        const fileInput = document.getElementById('file');
-        const file = fileInput.files[0];
 
-        if (title.trim() === '' || price.trim() === '' || description.trim() === '' || address.trim() === '' || availableFrom.trim() === '') {
+        if (title.trim() === '' || price.trim() === '' || description.trim() === '' || address.trim() === '') {
           swal({
             title: 'Failure!',
             text: 'Input fields cannot be empty',
@@ -292,6 +255,9 @@
           event.preventDefault();
           return false;
         }
+
+        const fileInput = document.getElementById('file');
+        const file = fileInput.files[0];
 
         if (file) {
           const fileSize = file.size; // Size of the file in bytes
@@ -307,7 +273,7 @@
             event.preventDefault();
             return false;
           }
-        } else if (!id) {
+        } else {
           swal({
             title: 'Failure!',
             text: 'Please upload image',

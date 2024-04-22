@@ -1,10 +1,275 @@
 <!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
-</head>
-<body>
-<h2>Certification Assistance</h2>
-</body>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head th:replace="~{fragments/head::head}"></head>
+  <body>
+    <div th:replace="fragments/header.html :: header"></div>
+
+    <div class="container mt-5">
+      <div class="row">
+        <div class="col-md-12">
+          <!-- Button trigger modal -->
+          <button
+            id="toggleModalBtn"
+            type="button"
+            class="btn btn-primary mb-5 float-right"
+            data-bs-toggle="modal"
+            data-bs-target="#addCertificationModal"
+          >
+            Add Certification
+          </button>
+
+          <!-- Add Certification Modal -->
+          <div class="modal fade" id="addCertificationModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">Add Certification</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <!-- Add Certification Form -->
+                  <form
+                    action="/add-request"
+                    th:object="${CertificateAssistanceForm}"
+                    method="post"
+                    class=""
+                    enctype="multipart/form-data"
+                    id="addCertificationForm"
+                    onsubmit="validateForm()"
+                  >
+                    <input hidden="hidden" type="number" class="form-control" id="id" name="id" />
+                    <div class="mb-3">
+                      <label for="requestType" class="form-label">Request Type</label>
+                      <input type="text" class="form-control" id="requestType" name="requestType" placeholder="Enter request type" required />
+                    </div>
+
+                    <div class="mb-3">
+                      <label for="description" class="form-label">Description</label>
+                      <textarea class="form-control" id="description" name="description" placeholder="Enter Description" required></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                      <label for="emailId2" class="form-label">Email</label>
+                      <input type="email" class="form-control" id="emailId2" value="s559190@nwmissouri.edu" disabled />
+                      <input type="email" class="form-control" id="emailId" name="emailId" value="s559190@nwmissouri.edu" hidden />
+                    </div>
+
+                    <div class="preview">
+                      <img
+                        class="rounded-circle text-center"
+                        id="file-ip-1-preview"
+                        height="110"
+                        width="110"
+                        alt="Certificate assistance image"
+                        style="display: none"
+                      />
+                      <span id="file-name" style="display: none"></span>
+                    </div>
+
+                    <label for="file" class="btn btn-dark" data-mdb-ripple-color="dark">Upload File</label>
+                    <input name="file" type="file" id="file" style="display: none" onchange="showPreview(event);" />
+
+                    <br /><br />
+
+                    <button type="submit" class="btn btn-primary">Save Certification</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Saved Certifications -->
+          <div id="savedCertifications">
+            <h2 class="mb-4 text-center">Saved Certifications</h2>
+            <table id="certificationsTable" class="table table-striped table-bordered mt-3">
+              <thead>
+                <tr>
+                  <th>Request Type</th>
+                  <th>Description</th>
+                  <th>Assistant Email</th>
+                  <th>Certificate Image</th>
+                  <th>Actions</th>
+                  <th hidden="hidden">id</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr th:each="certificate : ${userCertificates}">
+                  <td th:text="${certificate.requestType}"></td>
+                  <td th:text="${certificate.description}"></td>
+                  <td>s559190@nwmissouri.edu</td>
+                  <td>
+                    <img
+                      th:src="@{'data:image/jpeg;base64,'+${certificate.generateBase64Image()}}"
+                      alt="certificate Image"
+                      style="max-width: 100px; max-height: 100px"
+                      class="certificate-image"
+                    />
+                  </td>
+                  <td>
+                    <button type="button" class="btn btn-primary btn-sm edit-button">Edit</button>
+                    <a th:href="@{'/delete-request?requestId=' + ${certificate.id}}">
+                      <button class="btn btn-danger delete-button" th:data-id="${certificate.id}">Delete</button>
+                    </a>
+                  </td>
+                  <td th:text="${certificate.id}" hidden="hidden"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <input th:value="${success}" disabled hidden="hidden" id="success" />
+        <input th:value="${message}" disabled hidden="hidden" id="message" />
+      </div>
+    </div>
+
+    <div th:replace="~{fragments/footer::footer}"></div>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        $('#certificationsTable').DataTable({
+          order: [],
+        });
+
+        const success = document.getElementById('success').value;
+        const editButtons = document.querySelectorAll('.edit-button');
+        const preview = document.getElementById('file-ip-1-preview');
+
+        if (success != 'null') {
+          const message = document.getElementById('message').value;
+
+          if (success === 'true') {
+            swal({
+              title: 'Success!',
+              text: message,
+              icon: 'success',
+              button: 'close!',
+            });
+          } else if (success === 'false') {
+            swal({
+              title: 'Failure!',
+              text: message,
+              icon: 'failure',
+              button: 'close!',
+            });
+          }
+        }
+
+        editButtons.forEach((button) => {
+          button.addEventListener('click', function () {
+            const row = this.closest('tr');
+
+            document.getElementById('requestType').value = row.querySelector('td:nth-child(1)').textContent.trim();
+            document.getElementById('description').value = row.querySelector('td:nth-child(2)').textContent.trim();
+            document.getElementById('id').value = row.querySelector('td:nth-child(6)').textContent.trim();
+
+            const imageSrc = row.querySelector('.certificate-image').getAttribute('src');
+
+            preview.src = imageSrc;
+            preview.style.display = '';
+
+            document.getElementById('toggleModalBtn').click();
+          });
+        });
+
+        $('#addCertificationModal').on('hidden.bs.modal', function () {
+          $('#addCertificationForm').trigger('reset');
+          preview.src = '';
+        });
+      });
+
+      function showPreview(event) {
+        const file = event.target.files[0];
+        const previewImage = document.getElementById('file-ip-1-preview');
+        const fileNameSpan = document.getElementById('file-name');
+
+        if (file.type.startsWith('image/')) {
+          // If the selected file is an image
+          var src = URL.createObjectURL(file);
+          previewImage.src = src;
+          previewImage.style.display = '';
+          fileNameSpan.style.display = 'none';
+        } else {
+          // If the selected file is not an image
+          previewImage.src = '';
+          previewImage.style.display = 'none';
+          fileNameSpan.innerText = file.name;
+          fileNameSpan.style.display = '';
+        }
+      }
+
+      // Add event listener for delete buttons
+      document.querySelectorAll('.delete-button').forEach((button) => {
+        button.addEventListener('click', () => {
+          const certificationId = button.getAttribute('data-id');
+          // Send a request to delete the certification with the given ID
+          fetch(`/delete-certification?id=${certificationId}`, {
+            method: 'DELETE',
+          })
+            .then((response) => {
+              if (response.ok) {
+                // Remove the deleted certification from the list
+                button.parentNode.remove();
+                // Optionally, display a success message
+                // alert('Certification deleted successfully');
+              } else {
+                // Handle error response
+                console.error('Failed to delete certification');
+                // Optionally, display an error message
+                // alert('Failed to delete certification');
+              }
+            })
+            .catch((error) => {
+              console.error('Error deleting certification:', error);
+              // Optionally, display an error message
+              // alert('Error deleting certification');
+            });
+        });
+      });
+
+      function validateForm() {
+        const requestType = document.getElementById('requestType').value;
+        const description = document.getElementById('description').value;
+        const id = document.getElementById('id').value;
+        const emailId = document.getElementById('emailId').value;
+        const fileInput = document.getElementById('file');
+        const file = fileInput.files[0];
+
+        if (requestType.trim() == '' || description.trim() == '' || emailId.trim() == '') {
+          swal({
+            title: 'Failure!',
+            text: 'All fields are mandatory',
+            icon: 'failure',
+            button: 'close!',
+          });
+          event.preventDefault();
+          return false;
+        }
+
+        if (file) {
+          const fileSize = file.size; // Size of the file in bytes
+          const maxSize = 5 * 1024 * 1024; // 5 MB in bytes
+
+          if (fileSize > maxSize) {
+            swal({
+              title: 'Failure!',
+              text: 'File size cannot be more than 5MB',
+              icon: 'failure',
+              button: 'close!',
+            });
+            event.preventDefault();
+            return false;
+          }
+        } else if (!id) {
+          swal({
+            title: 'Failure!',
+            text: 'Please upload image',
+            icon: 'failure',
+            button: 'close!',
+          });
+          event.preventDefault();
+          return false;
+        }
+      }
+    </script>
+  </body>
 </html>

@@ -8,8 +8,7 @@
     <div class="row">
         <div class="col-md-12">
 
-            <h1 class="mb-4">Available Events</h1>
-            <div class="mb-3 d-flex justify-content-end">
+			<div class="mb-5 d-flex justify-content-end">
                 <a th:href="@{/my-events}">
                     <button type="button" class="btn btn-primary" data-toggle="modal"
                             data-target="#addAccommodationModal">My Events
@@ -17,6 +16,7 @@
                 </a>
             </div>
 
+            <h1 class="mb-4 text-center">Available Events</h1>
 
             <table id="eventsTable" class="table table-striped table-bordered">
                 <thead>
@@ -26,8 +26,10 @@
                     <th>Seats available</th>
                     <th>Date/Time</th>
                     <th>Price</th>
+					<th>Posted By</th>
                     <th>Actions</th>
-                    <th hidden="hidden">id</th>
+					<th hidden="hidden">id</th>
+					
                 </tr>
                 </thead>
                 <tbody>
@@ -38,6 +40,7 @@
                     <td th:text="${event.availableSeats}"></td>
                     <td th:text="${event.dateTime}"></td>
                     <td th:text="${event.price}"></td>
+					<td th:text="${event.user!= null ? event.user.name : 'Empty'}"></td>
                     <td>
                         <button onclick="confirmReservation(this)" th:value="${event.id}"
                                 type="button" class="btn btn-primary btn-sm">Reserve Seat
@@ -63,7 +66,7 @@
 
     $(document).ready(function () {
         // Initialize DataTable for accommodations table
-        $('#eventTable').DataTable({
+        $('#eventsTable').DataTable({
             "order": [] // Disable initial sorting
         });
     });
