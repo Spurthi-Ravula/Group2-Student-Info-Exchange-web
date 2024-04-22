@@ -2,17 +2,13 @@ package com.example.SMS.service;
 
 import com.example.SMS.dto.AddRideForm;
 import com.example.SMS.entity.Ride;
-import com.example.SMS.entity.Ride;
 import com.example.SMS.entity.User;
-import com.example.SMS.repository.RideRepository;
 import com.example.SMS.repository.RideRepository;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.Timestamp;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.Date;
@@ -35,7 +31,7 @@ public class RideServiceImpl implements RideService {
     @Override
     public void addRide(AddRideForm addRideForm) {
         User user = userService.findUserByEmail(userService.getLoggedInUserEmail());
-        if (addRideForm.getId() != 0){
+        if (addRideForm.getId() != 0) {
             Ride ride = rideRepository.getRideByUserAndId(user, addRideForm.getId())
                     .orElseThrow(() -> new Exception("Invalid Ride id"));
 
@@ -43,12 +39,12 @@ public class RideServiceImpl implements RideService {
             ride.setDescription(addRideForm.getDescription());
             ride.setFrom(addRideForm.getFrom());
             ride.setTo(addRideForm.getTo());
-
+            ride.setAvailableSeats(addRideForm.getAvailableSeats());
             ride.setDateTime(stringToTimestamp(addRideForm.getDateTime()));
             ride.setPrice(addRideForm.getPrice());
             rideRepository.save(ride);
 
-        }else {
+        } else {
             Ride ride = Ride.builder()
                     .user(user)
                     .title(addRideForm.getTitle())
@@ -57,6 +53,7 @@ public class RideServiceImpl implements RideService {
                     .to(addRideForm.getTo())
                     .dateTime(stringToTimestamp(addRideForm.getDateTime()))
                     .price(addRideForm.getPrice())
+                    .availableSeats(addRideForm.getAvailableSeats())
                     .postedDate(new Timestamp(Instant.now().toEpochMilli()))
                     .status("AVAILABLE")
                     .build();
@@ -64,16 +61,13 @@ public class RideServiceImpl implements RideService {
             rideRepository.save(ride);
         }
 
-
     }
 
     @SneakyThrows
-    public Timestamp stringToTimestamp(String datetimeString) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
-            // Parse the datetime string to create a Date object
-            Date date = sdf.parse(datetimeString);
-            // Get the Unix timestamp (number of milliseconds since January 1, 1970)
-            return new Timestamp(date.getTime() / 1000); // Convert milliseconds to seconds
+    public static Timestamp stringToTimestamp(String dateString) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
+        Date parsedDate = dateFormat.parse(dateString);
+        return new Timestamp(parsedDate.getTime());
     }
 
     @Override
@@ -99,7 +93,31 @@ public class RideServiceImpl implements RideService {
         Ride ride = rideRepository.findById(id)
                 .orElseThrow(() -> new Exception("Invalid Ride id"));
         ride.setStatus("RESERVED");
+       // ride.setAvailableSeats(ride.getAvailableSeats()-1);
         ride.setReservedBy(user);
+        rideRepository.save(ride);
+    }
+
+    @Override
+    @SneakyThrows
+    public List<Ride> getUserReservedRides() {
+        User user = userService.findUserByEmail(userService.getLoggedInUserEmail());
+        return rideRepository.findAllByReservedBy(user);
+    }
+
+    @Override
+    @SneakyThrows
+    public void cancelReservedRide(Long RideId) {
+        User user = userService.findUserByEmail(userService.getLoggedInUserEmail());
+        Ride ride = rideRepository.findById(RideId)
+                .orElseThrow(() -> new Exception("Invalid Ride id"));
+
+        if (user.getEmail().equalsIgnoreCase(ride.getReservedBy().getEmail())) {
+            ride.setReservedBy(null);
+            //ride.setAvailableSeats(ride.getAvailableSeats()+1);
+            ride.setStatus("AVAILABLE");
+        }
+
         rideRepository.save(ride);
     }
 }
