@@ -35,6 +35,8 @@ public class Accommodation {
     private String title;
 
     private String address;
+    
+    private Timestamp availableFrom;
 
     private Double longitude;
 
